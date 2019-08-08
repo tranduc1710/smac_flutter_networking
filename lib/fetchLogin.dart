@@ -81,13 +81,13 @@ class GetDataTransactionObjectModel{
 
 //model get san pham
 class GetDataTransactionModel{
-  List<DataTransactionModel> lsStockModel;
+  String lsStockModel;
 
   GetDataTransactionModel({this.lsStockModel});
 
   factory GetDataTransactionModel.fromJson(Map<String, dynamic> json)
     => GetDataTransactionModel(
-        lsStockModel: json['lsStockModel'].cast<DataTransactionModel>()
+        lsStockModel: json['lsStockModel'],
     );
 }
 
@@ -160,14 +160,25 @@ Future<List<DataTransactionModel>> getListDataTransaction(String sessionId, Stri
 
   Map<String, dynamic> data1 = json.decode(response.body);
 
-  var dataGetResult = GetDataTransactionResultModel.fromJson(data1);
-  var dataGetObject = GetDataTransactionObjectModel.fromJson(dataGetResult.result);
-  var dataGet = GetDataTransactionModel.fromJson(dataGetObject.object);
+  //su dung model trong truong hop lay nhieu thuoc tinh
+//  var dataGetResult = GetDataTransactionResultModel.fromJson(data1);
+//  var dataGetObject = GetDataTransactionObjectModel.fromJson(dataGetResult.result);
+//  var Object = jsonDecode(jsonEncode(dataGetObject.object));
+//  var lsStockModel = Object['lsStockModel'] as List;
 
-  List<DataTransactionModel> list = dataGet.lsStockModel;
+  //get don gian cho lay mot thuoc tinh
+  var dataGetResult = data1['result'];
+  var dataGetObject = dataGetResult['object'];
+  var lsStockModel = dataGetObject['lsStockModel'] as List;
+
+  List<DataTransactionModel> list1;
+
+  list1 = lsStockModel.map<DataTransactionModel>((json) => DataTransactionModel.fromJson(json)).toList();
+
+  print(list1[0].stockModelName);
 
   if(response.statusCode == 200){
-    return list;
+    return list1;
   }else{
     return null;
   }
